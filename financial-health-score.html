@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Health Score — Get Scored Like a Credit Report | Yaari</title>
+<meta name="description" content="What score would your financial life get? Free Financial Health Score — rated 0-100 across spending, savings, and debt. Instant result, no signup.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0A0A0F;--surface:#13131A;--surface-hover:#1A1A24;--border:rgba(255,255,255,0.06);--text:#E8E8ED;--text-secondary:#8A8A9A;--accent:#3DFFA0;--accent-dim:rgba(61,255,160,0.08);--accent-glow:rgba(61,255,160,0.15);--warm:#FFB86C;--warm-dim:rgba(255,184,108,0.08);--pink:#FF6B9D;--blue:#6BC5FF;--blue-dim:rgba(107,197,255,0.08);--red:#FF4F4F;--red-dim:rgba(255,79,79,0.07)}
+  *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .serif{font-family:'Instrument Serif',serif}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+  .nav-logo{font-size:26px;font-weight:700;color:#fff;text-decoration:none}.nav-logo span{color:var(--accent)}
+  .nav-back{font-size:14px;color:var(--text-secondary);text-decoration:none;font-weight:500;transition:color .2s}.nav-back:hover{color:var(--text)}
+
+  .btn-primary{background:var(--accent);color:#0A0A0F;padding:16px 36px;border-radius:100px;font-size:16px;font-weight:600;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-glow)}
+  .btn-full{width:100%;justify-content:center}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative}
+  .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none;opacity:.4}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:var(--accent-dim);border:1px solid rgba(61,255,160,.12);font-size:13px;font-weight:500;color:var(--accent);margin-bottom:32px;animation:fadeUp .8s ease both}
+  .hero h1{font-size:clamp(36px,7vw,68px);font-weight:700;line-height:1.05;letter-spacing:-2px;max-width:750px;animation:fadeUp .8s .1s ease both}
+  .hero h1 .serif{font-weight:400;font-style:italic;color:var(--accent)}
+  .hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text-secondary);max-width:460px;margin-top:24px;line-height:1.6;animation:fadeUp .8s .2s ease both}
+  .hero-social{margin-top:16px;font-size:14px;color:var(--text-secondary);animation:fadeUp .8s .3s ease both}
+  .hero-cta{margin-top:32px;animation:fadeUp .8s .35s ease both}
+
+  .tool-section{padding:80px 24px;max-width:1100px;margin:0 auto;text-align:center}
+  .tool-card{max-width:520px;margin:48px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;text-align:left;transition:opacity .4s,transform .4s}
+  .tool-card.hidden{opacity:0;pointer-events:none;height:0;overflow:hidden;padding:0;margin:0}
+
+  .q-section{margin-bottom:8px}
+  .q-label{font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;margin-top:28px;display:flex;align-items:center;gap:8px}
+  .q-label:first-child{margin-top:0}
+  .q-label .em{font-size:16px}
+
+  .slider-group{margin-bottom:20px}
+  .slider-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .slider-q{font-size:14px;font-weight:600}
+  .slider-val{font-size:16px;font-weight:700;color:var(--accent);min-width:60px;text-align:right}
+  input[type=range]{width:100%;height:6px;-webkit-appearance:none;background:var(--surface-hover);border-radius:3px;outline:none;margin-bottom:4px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg)}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-secondary)}
+
+  .results{display:none;max-width:580px;margin:0 auto;padding-top:40px}.results.visible{display:block}
+
+  /* Score Ring */
+  .score-hero{text-align:center;padding:56px 32px;background:var(--surface);border:1px solid var(--border);border-radius:24px;animation:fadeUp .6s ease both;position:relative;overflow:hidden}
+  .score-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:400px;height:300px;border-radius:50%;pointer-events:none;opacity:.08}
+  .score-ring{position:relative;width:180px;height:180px;margin:0 auto}
+  .score-ring svg{width:180px;height:180px;transform:rotate(-90deg)}
+  .score-ring-bg{fill:none;stroke:var(--surface-hover);stroke-width:12}
+  .score-ring-fill{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease,stroke 1s}
+  .score-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+  .score-big{font-size:52px;font-weight:700;letter-spacing:-3px;line-height:1;animation:countUp .6s .3s ease both}
+  .score-of{font-size:13px;color:var(--text-secondary);margin-top:2px}
+  .score-tag{font-size:18px;font-weight:600;margin-top:16px}
+
+  /* Component Bars */
+  .components{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-top:16px;animation:fadeUp .6s .15s ease both}
+  .components h3{font-size:14px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px}
+  .comp-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}.comp-row:last-child{margin-bottom:0}
+  .comp-icon{font-size:20px;width:36px;text-align:center;flex-shrink:0}
+  .comp-info{flex:1}
+  .comp-name{font-size:14px;font-weight:600;margin-bottom:4px}
+  .comp-track{height:10px;background:rgba(255,255,255,.04);border-radius:100px;overflow:hidden}
+  .comp-fill{height:100%;border-radius:100px;transition:width 1s ease}
+  .comp-score{font-size:14px;font-weight:700;flex-shrink:0;width:50px;text-align:right}
+
+  /* Tips */
+  .tips-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-top:16px;animation:fadeUp .6s .25s ease both}
+  .tips-card h3{font-size:14px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+  .tip{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-secondary);line-height:1.6}
+  .tip:last-child{border-bottom:none}
+  .tip-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
+  .tip strong{color:var(--text)}
+
+  .cta-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 32px;text-align:center;margin-top:16px;position:relative;overflow:hidden;animation:fadeUp .6s .35s ease both}
+  .cta-box::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(circle,var(--accent-glow),transparent 70%);pointer-events:none;opacity:.4}
+  .cta-box>*{position:relative}
+  .cta-box h3{font-size:clamp(22px,4vw,32px);font-weight:700;letter-spacing:-1px}
+  .cta-box p{font-size:15px;color:var(--text-secondary);margin-top:12px;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto}
+  .cta-box .btn-primary{margin-top:28px}
+
+  .seo-section{padding:80px 24px;max-width:700px;margin:0 auto;border-top:1px solid var(--border)}
+  .seo-section h2{font-size:22px;font-weight:700;margin-top:48px;margin-bottom:12px}.seo-section h2:first-child{margin-top:0}
+  .seo-section p{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+
+  .loading-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(10,10,15,.95);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:24px}.loading-overlay.visible{display:flex}
+  .loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid var(--surface-hover);border-top-color:var(--accent);animation:spin .8s linear infinite}
+  .loading-text{font-size:16px;color:var(--text-secondary)}
+
+  footer{padding:40px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--text-secondary)}footer a{color:var(--accent);text-decoration:none}
+
+  @media(max-width:768px){nav{padding:16px 20px}.tool-card{padding:28px 20px}.score-ring{width:150px;height:150px}.score-ring svg{width:150px;height:150px}.score-big{font-size:42px}.cta-box{padding:36px 20px}}
+</style>
+</head>
+<body>
+
+<nav><a href="#" class="nav-logo"><span>Y</span>aari</a><a href="#" class="nav-back">← All Free Tools</a></nav>
+
+<section class="hero">
+  <div class="hero-badge">🏥 Scorecard Tool</div>
+  <h1>Your financial <span class="serif">health score.</span></h1>
+  <p class="hero-sub">Get scored like a credit report — across spending, savings, and debt. What score would your life get?</p>
+  <p class="hero-social">Most people score below 60. Where do you stand?</p>
+  <div class="hero-cta"><a href="#tool" class="btn-primary">Get My Score →</a></div>
+</section>
+
+<section class="tool-section" id="tool">
+  <div class="tool-card" id="tool-card">
+
+    <div class="q-label"><span class="em">💰</span> Spending</div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">What % of income do you spend?</span><span class="slider-val" id="sv1">70%</span></div>
+      <input type="range" min="30" max="120" value="70" id="s1" oninput="document.getElementById('sv1').textContent=this.value+'%'">
+      <div class="slider-labels"><span>30% (frugal)</span><span>120% (overspending)</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">Impulse spending frequency?</span><span class="slider-val" id="sv2">Often</span></div>
+      <input type="range" min="1" max="4" value="3" id="s2" oninput="document.getElementById('sv2').textContent=['','Rarely','Sometimes','Often','Very often'][this.value]">
+      <div class="slider-labels"><span>Rarely</span><span>Very often</span></div>
+    </div>
+
+    <div class="q-label"><span class="em">🏦</span> Savings</div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">Monthly savings rate?</span><span class="slider-val" id="sv3">10%</span></div>
+      <input type="range" min="0" max="50" value="10" id="s3" oninput="document.getElementById('sv3').textContent=this.value+'%'">
+      <div class="slider-labels"><span>0%</span><span>50%</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">Emergency fund (months covered)?</span><span class="slider-val" id="sv4">1</span></div>
+      <input type="range" min="0" max="12" value="1" id="s4" oninput="document.getElementById('sv4').textContent=this.value">
+      <div class="slider-labels"><span>0 months</span><span>12 months</span></div>
+    </div>
+
+    <div class="q-label"><span class="em">📊</span> Debt</div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">EMI-to-income ratio?</span><span class="slider-val" id="sv5">20%</span></div>
+      <input type="range" min="0" max="80" value="20" id="s5" oninput="document.getElementById('sv5').textContent=this.value+'%'">
+      <div class="slider-labels"><span>0% (no EMIs)</span><span>80% (heavy debt)</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-top"><span class="slider-q">Credit card bill paid in full monthly?</span><span class="slider-val" id="sv6">Sometimes</span></div>
+      <input type="range" min="1" max="4" value="2" id="s6" oninput="document.getElementById('sv6').textContent=['','Always','Sometimes','Rarely','Never/No card'][this.value]">
+      <div class="slider-labels"><span>Always</span><span>Never</span></div>
+    </div>
+
+    <button class="btn-primary btn-full" style="margin-top:32px" onclick="score()">Get My Score →</button>
+  </div>
+  <div class="results" id="results"></div>
+</section>
+
+<section class="seo-section">
+  <h2>What is a financial health score?</h2>
+  <p>A financial health score rates your overall financial wellness across three dimensions: spending behavior, savings habits, and debt management. Unlike a credit score (which measures borrowing history), a financial health score measures how well you manage your day-to-day money.</p>
+  <h2>What's a good financial health score?</h2>
+  <p>Above 75 is excellent — you're spending wisely, saving consistently, and managing debt well. 50-75 means room for improvement in at least one area. Below 50 signals urgent changes needed. Most young Indians score 40-55 due to high spending and low emergency savings.</p>
+</section>
+
+<footer><a href="#">Yaari</a> — Your daily money companion. Built in Hyderabad 🇮🇳</footer>
+
+<div class="loading-overlay" id="loading"><div class="loading-spinner"></div><div class="loading-text" id="loading-text"></div></div>
+
+<script>
+function score(){
+  const spendPct=+document.getElementById('s1').value;
+  const impulse=+document.getElementById('s2').value;
+  const savRate=+document.getElementById('s3').value;
+  const emergency=+document.getElementById('s4').value;
+  const emiRatio=+document.getElementById('s5').value;
+  const ccPay=+document.getElementById('s6').value;
+
+  // Spending score (0-35)
+  let spendScore=0;
+  if(spendPct<=50)spendScore=30;else if(spendPct<=70)spendScore=25;else if(spendPct<=85)spendScore=18;else if(spendPct<=100)spendScore=10;else spendScore=3;
+  spendScore+=[0,5,3,1,0][impulse]||0;
+
+  // Savings score (0-35)
+  let savScore=0;
+  if(savRate>=30)savScore=25;else if(savRate>=20)savScore=20;else if(savRate>=10)savScore=14;else if(savRate>=5)savScore=8;else savScore=2;
+  if(emergency>=6)savScore+=10;else if(emergency>=3)savScore+=7;else if(emergency>=1)savScore+=4;else savScore+=0;
+
+  // Debt score (0-30)
+  let debtScore=0;
+  if(emiRatio<=10)debtScore=22;else if(emiRatio<=30)debtScore=18;else if(emiRatio<=40)debtScore=12;else if(emiRatio<=50)debtScore=6;else debtScore=2;
+  debtScore+=[0,8,5,2,0][ccPay]||0;
+
+  const total=Math.min(100,spendScore+savScore+debtScore);
+  const spendMax=35,savMax=35,debtMax=30;
+
+  const ol=document.getElementById('loading'),lt=document.getElementById('loading-text');
+  ol.classList.add('visible');
+  const msgs=['Evaluating spending habits…','Checking savings health…','Analyzing debt load…','Calculating your score…'];
+  let i=0;lt.textContent=msgs[0];const iv=setInterval(()=>{i++;if(i<msgs.length)lt.textContent=msgs[i]},700);
+  setTimeout(()=>{clearInterval(iv);ol.classList.remove('visible');render(total,spendScore,spendMax,savScore,savMax,debtScore,debtMax,{spendPct,impulse,savRate,emergency,emiRatio,ccPay})},2800);
+}
+
+function render(total,sp,spMax,sv,svMax,dt,dtMax,raw){
+  const col=total>=70?'var(--accent)':total>=45?'var(--warm)':'var(--red)';
+  const bg=total>=70?'var(--accent)':total>=45?'var(--warm)':'var(--red)';
+  const label=total>=70?'Healthy':total>=45?'Needs Work':'At Risk';
+
+  const circ=2*Math.PI*72; // radius 72
+  const offset=circ-(total/100)*circ;
+
+  // Tips
+  const tips=[];
+  if(raw.savRate<15)tips.push({icon:'💡',bg:'var(--accent-dim)',text:`<strong>Save more:</strong> Increase savings from ${raw.savRate}% to 20% — even ₹2,000/month more compounds significantly.`});
+  if(raw.emiRatio>35)tips.push({icon:'⚠️',bg:'var(--red-dim)',text:`<strong>Reduce EMI load:</strong> Your ${raw.emiRatio}% EMI ratio is above safe limits. Avoid new loans until below 30%.`});
+  if(raw.impulse>=3)tips.push({icon:'🛑',bg:'var(--warm-dim)',text:`<strong>Control impulse:</strong> Add a 24-hour rule before non-essential purchases above ₹500.`});
+  if(raw.emergency<3)tips.push({icon:'🛡️',bg:'var(--blue-dim)',text:`<strong>Build emergency fund:</strong> Aim for 3 months of expenses. Start with ₹1,000/month auto-transfer.`});
+  if(raw.ccPay>=3)tips.push({icon:'💳',bg:'var(--red-dim)',text:`<strong>Pay credit card in full:</strong> Revolving credit at 36-42% APR is the most expensive debt you can carry.`});
+  if(tips.length===0)tips.push({icon:'✅',bg:'var(--accent-dim)',text:'<strong>Great habits!</strong> Daily tracking with Yaari can help you optimize even further.'});
+
+  const components=[
+    {icon:'💸',name:'Spending',score:sp,max:spMax,pct:Math.round(sp/spMax*100),col:sp/spMax>.65?'var(--accent)':sp/spMax>.4?'var(--warm)':'var(--red)'},
+    {icon:'🏦',name:'Savings',score:sv,max:svMax,pct:Math.round(sv/svMax*100),col:sv/svMax>.65?'var(--accent)':sv/svMax>.4?'var(--warm)':'var(--red)'},
+    {icon:'📊',name:'Debt',score:dt,max:dtMax,pct:Math.round(dt/dtMax*100),col:dt/dtMax>.65?'var(--accent)':dt/dtMax>.4?'var(--warm)':'var(--red)'}
+  ];
+
+  const el=document.getElementById('results');
+  el.innerHTML=`
+  <div class="score-hero" style="--sc:${bg}">
+    <div class="score-ring">
+      <svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="72" class="score-ring-bg"/><circle cx="90" cy="90" r="72" class="score-ring-fill" id="ring" style="stroke:${col};stroke-dasharray:${circ};stroke-dashoffset:${circ}"/></svg>
+      <div class="score-center"><div class="score-big" style="color:${col}">${total}</div><div class="score-of">/ 100</div></div>
+    </div>
+    <div class="score-tag" style="color:${col}">${label}</div>
+  </div>
+
+  <div class="components"><h3>Score Breakdown</h3>${components.map(c=>`<div class="comp-row"><div class="comp-icon">${c.icon}</div><div class="comp-info"><div class="comp-name">${c.name}</div><div class="comp-track"><div class="comp-fill" style="width:0%;background:${c.col}" data-w="${c.pct}"></div></div></div><div class="comp-score" style="color:${c.col}">${c.score}/${c.max}</div></div>`).join('')}</div>
+
+  <div class="tips-card"><h3>Action Tips</h3>${tips.map(t=>`<div class="tip"><div class="tip-icon" style="background:${t.bg}">${t.icon}</div><div>${t.text}</div></div>`).join('')}</div>
+
+  <div class="cta-box"><h3>Improve this score — daily.</h3><p>Yaari tracks your financial health continuously and shows you exactly which habits to change. Your score updates as your behavior improves.</p><a href="#" class="btn-primary">Start Improving My Score →</a></div>`;
+
+  el.classList.add('visible');
+  document.getElementById('tool-card').classList.add('hidden');
+
+  // Animate ring
+  setTimeout(()=>{document.getElementById('ring').style.strokeDashoffset=offset},300);
+  // Animate component bars
+  setTimeout(()=>{document.querySelectorAll('.comp-fill').forEach(bar=>{bar.style.width=bar.dataset.w+'%'})},500);
+
+  setTimeout(()=>{el.scrollIntoView({behavior:'smooth',block:'start'})},150);
+}
+</script>
+</body>
+</html>

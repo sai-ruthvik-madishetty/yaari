@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaari — Your Personalized Debt Escape Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg:#0A0A0F; --surface:#13131A; --surface-hover:#1A1A24;
+        --border:rgba(255,255,255,0.06); --text:#E8E8ED; --text-secondary:#8A8A9A;
+        --accent:#3DFFA0; --accent-dim:rgba(61,255,160,0.08); --accent-glow:rgba(61,255,160,0.15);
+        --warm:#FFB86C; --warm-dim:rgba(255,184,108,0.08);
+        --pink:#FF6B9D; --blue:#6BC5FF;
+        --red:#FF4F4F; --red-dim:rgba(255,79,79,0.08);
+      }
+      *{margin:0;padding:0;box-sizing:border-box} html{scroll-behavior:smooth}
+      body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+      .serif{font-family:'Instrument Serif',serif;font-style:italic}
+
+      /* NAV */
+      nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+      .nav-logo{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.3px;text-decoration:none}
+      .nav-logo span{color:var(--accent)}
+      .nav-back{font-size:14px;color:var(--text-secondary);text-decoration:none;font-weight:500;transition:color .2s}.nav-back:hover{color:var(--text)}
+
+      /* BUTTONS */
+      .btn-primary{background:var(--accent);color:#0A0A0F;padding:16px 36px;border-radius:100px;font-size:16px;font-weight:600;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif}
+      .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-glow)}
+      .btn-full{width:100%;justify-content:center}
+      .btn-ghost{background:transparent;color:var(--text);padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;border:1px solid var(--border);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .2s,background .2s;font-family:'DM Sans',sans-serif}
+      .btn-ghost:hover{border-color:rgba(255,255,255,.15);background:var(--surface)}
+
+      @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes spin{to{transform:rotate(360deg)}}
+
+      /* HERO */
+      .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative}
+      .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none;opacity:.4}
+      .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:var(--accent-dim);border:1px solid rgba(61,255,160,.12);font-size:13px;font-weight:500;color:var(--accent);margin-bottom:32px;animation:fadeUp .8s ease both}
+      .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+      @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+      .hero h1{font-size:clamp(40px,7vw,72px);font-weight:700;line-height:1.05;letter-spacing:-2px;max-width:800px;animation:fadeUp .8s .1s ease both}
+      .hero h1 .serif{font-weight:400;color:var(--accent)}
+      .hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text-secondary);max-width:520px;margin-top:24px;line-height:1.6;animation:fadeUp .8s .2s ease both}
+      .hero-actions{margin-top:40px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .3s ease both}
+      .hero-micro{font-size:13px;color:var(--text-secondary);margin-top:16px;animation:fadeUp .8s .35s ease both}
+
+      /* SECTIONS */
+      section{padding:100px 24px;max-width:1100px;margin:0 auto}
+      .section-label{font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
+      .section-title{font-size:clamp(30px,5vw,48px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;max-width:700px;margin-bottom:48px}
+      .section-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);font-weight:400}
+
+      /* CARDS */
+      .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;transition:border-color .3s,transform .3s}
+      .card:hover{border-color:rgba(255,255,255,.1);transform:translateY(-4px)}
+      .card-accent{background:rgba(61,255,160,.05);border-color:rgba(61,255,160,.15)}
+
+      /* PERSONA GRID */
+      .persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:40px}
+      .persona-icon{font-size:28px;margin-bottom:12px}
+      .persona-name{font-size:18px;font-weight:600;margin-bottom:8px}
+      .persona-quote{color:var(--text-secondary);font-size:15px;line-height:1.6}
+
+      /* VALUE */
+      .value-section{text-align:center}
+      .value-section h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;max-width:700px;margin:0 auto 16px}
+      .value-section h2 em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);font-weight:400}
+      .value-section p{font-size:17px;color:var(--text-secondary);line-height:1.7;max-width:600px;margin:0 auto}
+
+      /* INPUT FORM */
+      .input-section-wrap{background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 24px}
+      .input-inner{max-width:1100px;margin:0 auto}
+      .input-form{max-width:600px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px}
+      .form-group{margin-bottom:28px}
+      .form-label{display:block;font-size:14px;font-weight:600;margin-bottom:10px;color:var(--text)}
+      .form-input{width:100%;padding:14px 16px;background:var(--surface-hover);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+      .form-input:focus{border-color:rgba(61,255,160,.3)}
+      .slider{width:100%;height:6px;border-radius:6px;background:rgba(255,255,255,.1);outline:none;-webkit-appearance:none;cursor:pointer}
+      .slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg)}
+      .slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg)}
+      .slider-value{font-size:24px;font-weight:700;color:var(--accent);margin-top:10px}
+      .form-micro{text-align:center;margin-top:12px;font-size:13px;color:var(--text-secondary)}
+
+      /* PROCESSING */
+      .processing-state{display:none;text-align:center;padding:40px;background:var(--accent-dim);border:1px solid rgba(61,255,160,.12);border-radius:20px;margin-top:20px}
+      .processing-state.active{display:block}
+      .spinner{width:40px;height:40px;border:3px solid var(--surface-hover);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+
+      /* PLAN OUTPUT */
+      .plan-output{display:none;padding:100px 24px}
+      .plan-output.active{display:block}
+      .plan-output-inner{max-width:1100px;margin:0 auto}
+      .plan-header{text-align:center;margin-bottom:8px}
+      .plan-tagline{font-size:15px;color:var(--text-secondary);text-align:center;margin-bottom:48px}
+
+      /* INSIGHT CARD */
+      .hero-insight{background:rgba(61,255,160,.05);border:1px solid rgba(61,255,160,.15);border-radius:20px;padding:32px;margin-bottom:24px}
+      .insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;margin-bottom:20px}
+      .insight-item{text-align:center}
+      .insight-emoji{font-size:24px;margin-bottom:8px}
+      .insight-value{font-size:28px;font-weight:700;color:var(--accent);margin-bottom:4px;letter-spacing:-1px}
+      .insight-label{font-size:13px;color:var(--text-secondary)}
+      .insight-highlight{background:var(--accent-dim);border-radius:12px;padding:14px 20px;text-align:center;font-size:15px;font-weight:600;color:var(--accent)}
+
+      /* TIMELINE */
+      .timeline-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:24px}
+      .timeline-title{font-size:18px;font-weight:600;margin-bottom:20px}
+      .timeline-bar{width:100%;height:40px;background:rgba(255,255,255,.05);border-radius:12px;overflow:hidden;margin-bottom:20px}
+      .timeline-progress{height:100%;background:linear-gradient(90deg,var(--warm) 0%,#ffeb5c 50%,var(--accent) 100%);width:0%;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-size:13px;font-weight:600;transition:width 1s ease-out;border-radius:12px;color:#0A0A0F}
+      .milestones{display:grid;gap:10px}
+      .milestone{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface-hover);border-radius:12px}
+      .milestone-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+      .milestone-text{font-size:14px;color:var(--text-secondary)}
+      .milestone-text strong{color:var(--text)}
+
+      /* ACTION CARD */
+      .action-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:24px}
+      .action-month{font-size:16px;font-weight:600;color:var(--accent);margin-bottom:20px}
+      .action-list{display:grid;gap:10px;margin-bottom:20px}
+      .action-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface-hover);border-radius:12px}
+      .action-icon{font-size:18px}
+      .action-text{font-size:14px}
+      .why-box{background:var(--accent-dim);border-left:3px solid var(--accent);padding:16px 20px;border-radius:0 12px 12px 0}
+      .why-label{font-size:12px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+      .why-text{font-size:14px;color:var(--text-secondary);line-height:1.6}
+
+      /* STRATEGY CARD */
+      .strategy-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:24px}
+      .strategy-title{font-size:18px;font-weight:600;margin-bottom:12px}
+      .strategy-reason{font-size:14px;color:var(--accent);margin-bottom:14px;font-style:italic}
+      .strategy-points{display:grid;gap:8px}
+      .strategy-point{font-size:14px;color:var(--text-secondary);padding-left:20px;position:relative}
+      .strategy-point:before{content:"•";position:absolute;left:0;color:var(--accent);font-weight:bold}
+
+      /* COMPARISON */
+      .comparison-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:24px}
+      .comparison-title{font-size:18px;font-weight:600;margin-bottom:24px;text-align:center}
+      .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+      .comparison-col{padding:24px;border-radius:16px}
+      .comparison-col.old{background:rgba(255,79,79,.08);border:1px solid rgba(255,79,79,.15)}
+      .comparison-col.new{background:var(--accent-dim);border:1px solid rgba(61,255,160,.15)}
+      .comparison-col-title{font-size:13px;font-weight:600;margin-bottom:16px;text-align:center;color:var(--text-secondary)}
+      .comparison-stat{text-align:center;margin-bottom:12px}
+      .comparison-value{font-size:24px;font-weight:700;letter-spacing:-1px}
+      .comparison-col.old .comparison-value{color:var(--red)}
+      .comparison-col.new .comparison-value{color:var(--accent)}
+      .comparison-label{font-size:13px;color:var(--text-secondary)}
+      .comparison-impact{background:var(--red-dim);border:1px solid rgba(255,79,79,.1);border-radius:12px;padding:14px 20px;text-align:center;margin-top:16px;font-size:15px;font-weight:600;color:var(--red)}
+
+      /* NUDGES */
+      .nudges-card{background:var(--warm-dim);border:1px solid rgba(255,184,108,.2);border-radius:20px;padding:28px;margin-bottom:24px}
+      .nudges-title{font-size:18px;font-weight:600;margin-bottom:16px}
+      .nudge-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(255,184,108,.05);border-radius:12px;margin-bottom:10px}
+      .nudge-icon{font-size:18px;flex-shrink:0}
+      .nudge-text{font-size:14px;color:var(--warm);line-height:1.5}
+
+      /* DOWNLOAD */
+      .download-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:24px}
+      .download-title{font-size:18px;font-weight:600;margin-bottom:20px}
+      .download-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+      .download-btn{display:flex;align-items:center;gap:12px;padding:16px;background:var(--surface-hover);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:border-color .2s;text-decoration:none;color:var(--text)}
+      .download-btn:hover{border-color:var(--accent)}
+      .download-icon{font-size:20px}
+      .download-text{font-size:14px;font-weight:500}
+
+      /* LOCKED */
+      .locked-section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px}
+      .locked-content{filter:blur(6px);pointer-events:none;opacity:.4}
+      .locked-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:10}
+      .locked-title{font-size:18px;font-weight:600;margin-bottom:12px}
+      .locked-list{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
+
+      /* FINAL CTA */
+      .final-cta{background:rgba(255,255,255,.02);border-top:1px solid var(--border);padding:100px 24px;text-align:center}
+      .final-cta h2{font-size:clamp(30px,4vw,44px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;max-width:600px;margin:0 auto 32px}
+      .final-cta h2 em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);font-weight:400}
+
+      /* FOOTER */
+      footer{padding:32px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);font-size:14px;color:var(--text-secondary)}
+      footer strong{color:var(--text)}
+      .footer-links{display:flex;gap:24px}
+      .footer-links a{color:var(--text-secondary);text-decoration:none;transition:color .2s}
+      .footer-links a:hover{color:var(--text)}
+
+      @media(max-width:768px){nav{padding:16px 20px}.comparison-grid,.insight-grid,.download-options{grid-template-columns:1fr}footer{flex-direction:column;gap:16px;text-align:center;padding:24px 20px}}
+    </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo"><span>Y</span>aari</a>
+  <a href="#" class="nav-back">← All Free Tools</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>Debt Escape Engine</div>
+  <h1>Your Personalized<br><span class="serif">Debt Escape Plan</span></h1>
+  <p class="hero-sub">A clear, step-by-step path to becoming debt-free — based on your real numbers.</p>
+  <div class="hero-actions">
+    <a href="#plan" class="btn-primary">Create My Plan →</a>
+    <a href="#problem" class="btn-ghost">See how it works</a>
+  </div>
+  <p class="hero-micro">No spreadsheets. No financial jargon.</p>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <p class="section-label">The Problem</p>
+  <h2 class="section-title">Not for finance experts.<br>For <em>people stuck in debt.</em></h2>
+  <div class="persona-grid">
+    <div class="card">
+      <div class="persona-icon">👨</div>
+      <div class="persona-name">Arjun, 25</div>
+      <p class="persona-quote">"3 EMIs. Minimum payments. No idea if I'm doing this right."</p>
+    </div>
+    <div class="card">
+      <div class="persona-icon">👩</div>
+      <div class="persona-name">Meera, 29</div>
+      <p class="persona-quote">"I earn well but debt never goes down."</p>
+    </div>
+    <div class="card">
+      <div class="persona-icon">🎓</div>
+      <div class="persona-name">Rohit, 23</div>
+      <p class="persona-quote">"I just keep rolling over credit cards."</p>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE -->
+<div class="input-section-wrap" style="background:rgba(255,255,255,.02);padding:80px 24px">
+  <div class="input-inner" style="max-width:1100px;margin:0 auto;text-align:center">
+    <div class="value-section">
+      <h2>You don't need more income.<br>You need <em>a plan</em>.</h2>
+      <p style="margin-top:16px">Most people stay in debt not because they earn less — but because they don't know what to pay first, and when.</p>
+    </div>
+  </div>
+</div>
+
+<!-- INPUT SECTION -->
+<div class="input-section-wrap" id="plan">
+  <div class="input-inner">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="section-label">Build Your Plan</div>
+      <h2 style="font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-1.5px">Let's build <span class="serif">your plan</span></h2>
+    </div>
+    <div class="input-form">
+      <div class="form-group">
+        <label class="form-label">Total Debt</label>
+        <input type="range" class="slider" id="debtSlider" min="10000" max="1000000" value="420000" step="10000">
+        <div class="slider-value" id="debtValue">₹4,20,000</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Number of Loans</label>
+        <input type="number" class="form-input" id="numLoans" placeholder="3" min="1" max="10" value="3">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Monthly EMI Budget</label>
+        <input type="text" class="form-input" id="emiBudget" placeholder="₹15,000" value="15000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Average Interest Rate (Optional)</label>
+        <input type="text" class="form-input" id="interestRate" placeholder="12" value="12">
+      </div>
+      <button class="btn-primary btn-full" id="generateBtn">Generate My Plan →</button>
+      <p class="form-micro">Takes less than 60 seconds</p>
+      <div class="processing-state" id="processingState">
+        <div class="spinner"></div>
+        <div style="color:var(--accent);font-weight:600">Analyzing your debt pattern…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN OUTPUT -->
+<section class="plan-output" id="output">
+  <div class="plan-output-inner">
+    <div class="plan-header">
+      <div class="section-label">Your Results</div>
+      <h2 style="font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1.5px">Your <span class="serif">Personalized</span> Plan</h2>
+    </div>
+    <p class="plan-tagline">This plan updates as your life changes.</p>
+
+    <div class="hero-insight">
+      <div class="insight-grid">
+        <div class="insight-item">
+          <div class="insight-emoji">🟢</div>
+          <div class="insight-value" id="debtFreeMonths">18 months</div>
+          <div class="insight-label">Debt-free in</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-emoji">💰</div>
+          <div class="insight-value" id="interestSaved">₹72K</div>
+          <div class="insight-label">You save in interest</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-emoji">🎯</div>
+          <div class="insight-value" id="strategyType">Snowball</div>
+          <div class="insight-label">Strategy type</div>
+        </div>
+      </div>
+      <div class="insight-highlight" id="speedFactor">You're 2.3x faster than your current repayment path</div>
+    </div>
+
+    <div class="timeline-card">
+      <div class="timeline-title">📊 Your Debt-Free Timeline</div>
+      <div class="timeline-bar"><div class="timeline-progress" id="timelineProgress">45% Complete</div></div>
+      <div class="milestones" id="milestonesContainer">
+        <div class="milestone"><div class="milestone-dot" style="background:var(--accent)"></div><div class="milestone-text"><strong>Month 4:</strong> Loan 1 cleared</div></div>
+        <div class="milestone"><div class="milestone-dot" style="background:var(--warm)"></div><div class="milestone-text"><strong>Month 10:</strong> Loan 2 closed</div></div>
+        <div class="milestone"><div class="milestone-dot" style="background:var(--pink)"></div><div class="milestone-text"><strong>Month 18:</strong> 100% Debt-free 🎉</div></div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-month">📅 This Month (April 2026)</div>
+      <div class="action-list" id="actionList">
+        <div class="action-item"><div class="action-icon">💳</div><div class="action-text">Pay ₹12,000 → Loan 1 (Highest Priority)</div></div>
+        <div class="action-item"><div class="action-icon">🏦</div><div class="action-text">Pay ₹3,000 → Loan 2</div></div>
+        <div class="action-item"><div class="action-icon">⛔</div><div class="action-text">Avoid new EMI</div></div>
+      </div>
+      <div class="why-box">
+        <div class="why-label">✅ Why This Works</div>
+        <div class="why-text" id="whyText">Focusing on the highest priority debt eliminates it faster, building momentum while reducing your mental load.</div>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-title">🎯 <span id="strategyTitle">Why Snowball Strategy?</span></div>
+      <div class="strategy-reason" id="strategyReason">"We chose Snowball because clearing small wins builds momentum."</div>
+      <div class="strategy-points" id="strategyPoints">
+        <div class="strategy-point">Clears smallest debts first</div>
+        <div class="strategy-point">Builds momentum and motivation</div>
+        <div class="strategy-point">Reduces mental load significantly</div>
+      </div>
+    </div>
+
+    <div class="comparison-card">
+      <div class="comparison-title">⚖️ Current Path vs. Your Plan</div>
+      <div class="comparison-grid">
+        <div class="comparison-col old">
+          <div class="comparison-col-title">Current Behavior</div>
+          <div class="comparison-stat"><div class="comparison-value" id="currentMonths">36 months</div><div class="comparison-label">Time to freedom</div></div>
+          <div class="comparison-stat"><div class="comparison-value" id="currentInterest">₹1.8L</div><div class="comparison-label">Interest paid</div></div>
+        </div>
+        <div class="comparison-col new">
+          <div class="comparison-col-title">Your Plan</div>
+          <div class="comparison-stat"><div class="comparison-value" id="planMonths">18 months</div><div class="comparison-label">Time to freedom</div></div>
+          <div class="comparison-stat"><div class="comparison-value" id="planInterest">₹1.08L</div><div class="comparison-label">Interest paid</div></div>
+        </div>
+      </div>
+      <div class="comparison-impact" id="comparisonImpact">💸 Doing nothing costs you ₹72,000</div>
+    </div>
+
+    <div class="nudges-card">
+      <div class="nudges-title">⚠️ Behavioral Risk Score</div>
+      <div id="nudgesContainer">
+        <div class="nudge-item"><div class="nudge-icon">⚠️</div><div class="nudge-text">Monitor your spending patterns</div></div>
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <a href="#" class="btn-primary">Fix this daily with smart nudges →</a>
+      </div>
+    </div>
+
+    <div class="download-card">
+      <div class="download-title">📥 Take Your Plan With You</div>
+      <div class="download-options">
+        <a href="#" class="download-btn" onclick="downloadPDF()"><div class="download-icon">📄</div><div class="download-text">Download PDF Plan</div></a>
+        <a href="#" class="download-btn"><div class="download-icon">📅</div><div class="download-text">Add Monthly Reminders</div></a>
+        <a href="#" class="download-btn"><div class="download-icon">🔔</div><div class="download-text">Daily Nudges</div></a>
+      </div>
+    </div>
+
+    <div class="card-accent card" style="margin-bottom:24px">
+      <p style="font-size:14px;color:var(--text-secondary)"><strong style="color:var(--accent)">💡 How we calculated this:</strong> Your plan is based on your debt structure, payment capacity, and interest impact using Avalanche and Snowball algorithms.</p>
+    </div>
+
+    <div class="locked-section">
+      <div class="locked-content">
+        <div style="padding:40px">
+          <h3 style="margin-bottom:16px">Full Month-by-Month Breakdown</h3>
+          <p style="color:var(--text-secondary);margin-bottom:12px">• Detailed payment schedule</p>
+          <p style="color:var(--text-secondary);margin-bottom:12px">• Advanced optimization tips</p>
+          <p style="color:var(--text-secondary);margin-bottom:12px">• Interest savings calculator</p>
+          <p style="color:var(--text-secondary)">• Personalized debt coaching</p>
+        </div>
+      </div>
+      <div class="locked-overlay">
+        <div class="locked-title">🔒 Unlock Your Complete Plan</div>
+        <div class="locked-list">Full breakdown · Advanced tips · Priority support</div>
+        <a href="#" class="btn-primary">Unlock Full Plan →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <h2>Your debt won't disappear<br><em>on its own.</em></h2>
+  <a href="#plan" class="btn-primary">Create My Plan Now →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+  function determineStrategy(loans){const hasInterest=loans.every(l=>l.interestRate!==undefined&&l.interestRate!==null);if(hasInterest){const rates=loans.map(l=>l.interestRate);const variance=Math.max(...rates)-Math.min(...rates);if(variance>5)return"AVALANCHE";}return"SNOWBALL";}
+  function prioritizeDebts(loans,strategy){const sorted=[...loans];if(strategy==="AVALANCHE"){sorted.sort((a,b)=>b.interestRate-a.interestRate);}else{sorted.sort((a,b)=>a.outstanding-b.outstanding);}return sorted;}
+  function allocatePayments(loans,budget){let remaining=budget;const allocated=loans.map(l=>({...l,allocatedPayment:l.minPayment}));remaining-=loans.reduce((s,l)=>s+l.minPayment,0);if(remaining>0)allocated[0].allocatedPayment+=remaining;return allocated;}
+  function simulateRepayment(loans){let balances=loans.map(l=>({...l,balance:l.outstanding}));let months=0;let totalInterest=0;const milestones=[];const timeline=[];while(balances.some(l=>l.balance>0)&&months<240){months++;let monthlyInterest=0;balances=balances.map(l=>{if(l.balance<=0)return l;const interest=(l.balance*(l.interestRate/100))/12;monthlyInterest+=interest;const newBalance=Math.max(0,l.balance+interest-l.allocatedPayment);if(newBalance===0&&l.balance>0)milestones.push({loanId:l.id,clearedAtMonth:months});return{...l,balance:newBalance};});totalInterest+=monthlyInterest;timeline.push({month:months,totalBalance:balances.reduce((s,l)=>s+l.balance,0)});}return{months,totalInterest,milestones,timeline};}
+  function simulateMinimumOnly(loans){let balances=loans.map(l=>({...l,balance:l.outstanding}));let months=0;let totalInterest=0;while(balances.some(l=>l.balance>0)&&months<360){months++;balances=balances.map(l=>{if(l.balance<=0)return l;const interest=(l.balance*(l.interestRate/100))/12;totalInterest+=interest;return{...l,balance:Math.max(0,l.balance+interest-l.minPayment)};});}return{months,totalInterest};}
+  function comparePlans(plan,current){return{timeSaved:current.months-plan.months,interestSaved:current.totalInterest-plan.totalInterest};}
+  function calculateRisk(loans,budget){let score=0;const totalMin=loans.reduce((s,l)=>s+l.minPayment,0);const ratio=totalMin/budget;if(loans.length>3)score+=2;if(ratio>0.7)score+=3;if(ratio>0.9)score+=5;if(score>=7)return"HIGH";if(score>=4)return"MEDIUM";return"LOW";}
+  function generateDebtPlan(input){const strategy=determineStrategy(input.loans);const prioritized=prioritizeDebts(input.loans,strategy);const allocated=allocatePayments(prioritized,input.monthlyBudget);const plan=simulateRepayment(allocated);const current=simulateMinimumOnly(input.loans);const comparison=comparePlans(plan,current);const risk=calculateRisk(input.loans,input.monthlyBudget);return{strategy,summary:{debtFreeInMonths:plan.months,interestPaid:Math.round(plan.totalInterest),timeSaved:comparison.timeSaved,interestSaved:Math.round(comparison.interestSaved)},timeline:plan.timeline,milestones:plan.milestones,allocatedLoans:allocated,currentPath:{months:current.months,interest:Math.round(current.totalInterest)},risk};}
+
+  const slider=document.getElementById('debtSlider');
+  const debtValue=document.getElementById('debtValue');
+  slider.addEventListener('input',function(){debtValue.textContent='₹'+parseInt(this.value).toLocaleString('en-IN');});
+
+  let currentPlan=null;
+  document.getElementById('generateBtn').addEventListener('click',function(){
+    const processingState=document.getElementById('processingState');
+    processingState.classList.add('active');
+    setTimeout(()=>{
+      try{
+        const totalDebt=parseInt(document.getElementById('debtSlider').value);
+        const numLoans=parseInt(document.getElementById('numLoans').value);
+        const monthlyBudget=parseFloat(document.getElementById('emiBudget').value.replace(/[^0-9.]/g,''));
+        const interestRate=parseFloat(document.getElementById('interestRate').value)||12;
+        const avgDebtPerLoan=totalDebt/numLoans;
+        const avgMinPayment=avgDebtPerLoan*0.05;
+        const loans=[];
+        for(let i=0;i<numLoans;i++){const variance=(Math.random()-0.5)*0.4;loans.push({id:i+1,outstanding:avgDebtPerLoan*(1+variance),minPayment:avgMinPayment*(1+variance),interestRate:interestRate+(Math.random()-0.5)*4});}
+        const input={loans,monthlyBudget};
+        currentPlan=generateDebtPlan(input);
+        updateUI(currentPlan);
+        processingState.classList.remove('active');
+        document.getElementById('output').classList.add('active');
+        document.getElementById('output').scrollIntoView({behavior:'smooth'});
+      }catch(error){alert('Please check your inputs: '+error.message);processingState.classList.remove('active');}
+    },2000);
+  });
+
+  function updateUI(plan){
+    document.getElementById('debtFreeMonths').textContent=plan.summary.debtFreeInMonths+' months';
+    document.getElementById('interestSaved').textContent='₹'+Math.round(plan.summary.interestSaved/1000)+'K';
+    document.getElementById('strategyType').textContent=plan.strategy.charAt(0)+plan.strategy.slice(1).toLowerCase();
+    const speedFactor=(plan.currentPath.months/plan.summary.debtFreeInMonths).toFixed(1);
+    document.getElementById('speedFactor').textContent=`You're ${speedFactor}x faster than your current repayment path`;
+    const progressPercent=Math.min((6/plan.summary.debtFreeInMonths)*100,100);
+    document.getElementById('timelineProgress').style.width=progressPercent+'%';
+    document.getElementById('timelineProgress').textContent=Math.round(progressPercent)+'% Complete';
+    const milestonesContainer=document.getElementById('milestonesContainer');
+    milestonesContainer.innerHTML='';
+    const colors=['var(--accent)','var(--warm)','var(--pink)'];
+    plan.milestones.forEach((m,index)=>{const div=document.createElement('div');div.className='milestone';div.innerHTML=`<div class="milestone-dot" style="background:${colors[index%3]}"></div><div class="milestone-text"><strong>Month ${m.clearedAtMonth}:</strong> Loan ${m.loanId} cleared</div>`;milestonesContainer.appendChild(div);});
+    const finalMilestone=document.createElement('div');finalMilestone.className='milestone';finalMilestone.innerHTML=`<div class="milestone-dot" style="background:var(--blue)"></div><div class="milestone-text"><strong>Month ${plan.summary.debtFreeInMonths}:</strong> 100% Debt-free 🎉</div>`;milestonesContainer.appendChild(finalMilestone);
+    const actionList=document.getElementById('actionList');actionList.innerHTML='';
+    plan.allocatedLoans.forEach((loan,index)=>{if(index<3){const icons=['💳','🏦','🏠'];const div=document.createElement('div');div.className='action-item';div.innerHTML=`<div class="action-icon">${icons[index]}</div><div class="action-text">Pay ₹${Math.round(loan.allocatedPayment).toLocaleString('en-IN')} → Loan ${loan.id}${index===0?' (Highest Priority)':''}</div>`;actionList.appendChild(div);}});
+    const avoidDiv=document.createElement('div');avoidDiv.className='action-item';avoidDiv.innerHTML=`<div class="action-icon">⛔</div><div class="action-text">Avoid new EMI</div>`;actionList.appendChild(avoidDiv);
+    if(plan.strategy==='AVALANCHE'){document.getElementById('strategyTitle').textContent='Why Avalanche Strategy?';document.getElementById('strategyReason').textContent='"We chose Avalanche because your high-interest debt is costing you more."';document.getElementById('strategyPoints').innerHTML=`<div class="strategy-point">Targets highest interest rates first</div><div class="strategy-point">Minimizes total interest paid</div><div class="strategy-point">Mathematically optimal approach</div>`;document.getElementById('whyText').textContent='Focusing on high-interest debt saves you the most money over time, even if it takes longer to see the first debt cleared.';}
+    document.getElementById('currentMonths').textContent=plan.currentPath.months+' months';
+    document.getElementById('currentInterest').textContent='₹'+Math.round(plan.currentPath.interest/1000)+'K';
+    document.getElementById('planMonths').textContent=plan.summary.debtFreeInMonths+' months';
+    document.getElementById('planInterest').textContent='₹'+Math.round(plan.summary.interestPaid/1000)+'K';
+    document.getElementById('comparisonImpact').textContent='💸 Doing nothing costs you ₹'+Math.round(plan.summary.interestSaved/1000)+'K';
+    const nudgesContainer=document.getElementById('nudgesContainer');nudgesContainer.innerHTML='';
+    if(plan.risk==='HIGH'){nudgesContainer.innerHTML=`<div class="nudge-item"><div class="nudge-icon">⚠️</div><div class="nudge-text">Your EMI-to-income ratio is risky (above 70%)</div></div><div class="nudge-item"><div class="nudge-icon">⚠️</div><div class="nudge-text">Consider increasing income or reducing non-essential expenses</div></div>`;}
+    else if(plan.risk==='MEDIUM'){nudgesContainer.innerHTML=`<div class="nudge-item"><div class="nudge-icon">⚠️</div><div class="nudge-text">Monitor your spending patterns closely</div></div>`;}
+    else{nudgesContainer.innerHTML=`<div class="nudge-item"><div class="nudge-icon">✅</div><div class="nudge-text">Your debt situation is manageable — stay consistent!</div></div>`;}
+  }
+
+  function downloadPDF(){alert('PDF download coming soon! Your plan will be emailed to you.');}
+  document.querySelectorAll('a[href^="#"]').forEach(anchor=>{anchor.addEventListener('click',function(e){e.preventDefault();const target=document.querySelector(this.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>
