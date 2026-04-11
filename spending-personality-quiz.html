@@ -195,9 +195,50 @@ nav{
 footer{padding:40px;border-top:1px solid var(--border);text-align:center;font-size:14px;color:var(--text-secondary);}
 footer a{color:var(--accent);text-decoration:none;}
 
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-.quiz-card,.result-card{animation:fadeUp 0.35s ease;}
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Hero entrance stagger */
+.hero-badge  { animation: fadeUp 0.8s 0.0s ease both; }
+.hero h1     { animation: fadeUp 0.8s 0.1s ease both; }
+.hero-sub    { animation: fadeUp 0.8s 0.2s ease both; }
+.hero .btn-primary { animation: fadeUp 0.8s 0.3s ease both; }
+
+/* Badge dot pulse */
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+/* Quiz card — snappy slide-up on each question render */
+.quiz-card { animation: fadeUp 0.35s ease both; }
+
+/* Result card — staggered entrance */
+.result-card         { animation: fadeUp 0.5s 0.0s ease both; }
+.result-card .result-emoji  { animation: fadeUp 0.5s 0.05s ease both; }
+.result-card .result-type   { animation: fadeUp 0.5s 0.1s ease both; }
+.result-card .result-title  { animation: fadeUp 0.5s 0.15s ease both; }
+.result-card .result-desc   { animation: fadeUp 0.5s 0.2s ease both; }
+.score-grid          { animation: fadeUp 0.5s 0.25s ease both; }
+#res-patterns        { animation: fadeUp 0.5s 0.3s ease both; }
+#res-fixes           { animation: fadeUp 0.5s 0.35s ease both; }
+.result-cta          { animation: fadeUp 0.5s 0.4s ease both; }
+
+/* Options slide in one by one via JS class */
+.option.appear { animation: slideIn 0.25s ease both; }
 
 @media(max-width:600px){
   nav{padding:16px 20px;}
@@ -218,7 +259,7 @@ footer a{color:var(--accent);text-decoration:none;}
 
   <!-- HERO -->
   <div class="hero" id="hero-section">
-    <div class="hero-badge">💭 Personality Quiz</div>
+    <div class="hero-badge"><span class="dot"></span>💭 Personality Quiz</div>
     <h1>What's your <span class="serif">spending personality?</span></h1>
     <p class="hero-sub">Discover your money patterns in 7 quick questions. Get personalized insights on what's working and what to fix.</p>
     <button class="btn-primary" onclick="startQuiz()">Start Quiz →</button>
@@ -452,6 +493,9 @@ function startQuiz() {
 }
 
 function renderQuestion() {
+  // Re-trigger quiz card fadeUp on each question change
+  const qc = document.querySelector('.quiz-card');
+  if (qc) { qc.style.animation = 'none'; qc.offsetHeight; qc.style.animation = ''; }
   const q = QUESTIONS[current];
   document.getElementById('q-num').textContent = 'Question ' + String(current + 1).padStart(2, '0');
   document.getElementById('q-text').textContent = q.text;
@@ -470,6 +514,8 @@ function renderQuestion() {
     btn.className = 'option' + (answers[current] === i ? ' selected' : '');
     btn.textContent = opt.text;
     btn.onclick = () => selectOption(i);
+    btn.style.animationDelay = (i * 0.06) + 's';
+    btn.classList.add('appear');
     optionsEl.appendChild(btn);
   });
 
@@ -541,6 +587,9 @@ function showResult() {
   const fixList = document.getElementById('res-fixes-list');
   fixList.innerHTML = p.fixes.map(f => `<li>${f}</li>`).join('');
 
+  // Re-trigger animations on result card
+  const rc = document.querySelector('.result-card');
+  if (rc) { rc.style.animation = 'none'; rc.offsetHeight; rc.style.animation = ''; }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -550,6 +599,9 @@ function retakeQuiz() {
   document.getElementById('result-section').classList.remove('active');
   document.getElementById('quiz-section').classList.add('active');
   renderQuestion();
+  // Re-trigger animations on result card
+  const rc = document.querySelector('.result-card');
+  if (rc) { rc.style.animation = 'none'; rc.offsetHeight; rc.style.animation = ''; }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
