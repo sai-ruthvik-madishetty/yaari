@@ -14,6 +14,7 @@
   --surface: #13131A;
   --surface-2: #1A1A24;
   --surface-3: #1A1A24;
+  --surface-hover:    #1A1A24;
   --border: rgba(255,255,255,0.06);
   --border-active: rgba(255,255,255,0.12);
   --text: #E8E8ED;
@@ -37,6 +38,19 @@
   --font-body: 'DM Sans', sans-serif;
   --font-mono: 'DM Sans', sans-serif;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Radius tokens ── */
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   20px;
+  --radius-xl:   24px;
+  --radius-pill: 100px;
+  --radius-card: 3rem;
+
+  /* ── Missing surface token ── */
+  --surface-hover: #1A1A24;
+  --text-secondary: #8A8A9A;
+  --font-sans: 'DM Sans', sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -60,24 +74,30 @@ body {
 /* ── NAV ── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 18px 32px;
+  padding: 20px 40px;
   display: flex; align-items: center; justify-content: space-between;
   background: rgba(10,10,15,0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 .nav-logo {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-size: 26px; font-weight: 700; color: #fff;
   letter-spacing: -0.3px; text-decoration: none;
 }
 .nav-logo span { color: var(--accent); }
+/* nav-back for consistency with other tool pages */
+.nav-back {
+  font-size: 14px; color: var(--text-secondary);
+  text-decoration: none; font-weight: 500; transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
 .nav-tag {
-  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  font-size: 11px; font-weight: 600; color: var(--text-secondary);
   text-transform: uppercase; letter-spacing: 1.5px;
   background: var(--surface-hover); padding: 6px 14px;
-  border-radius: 100px; border: 1px solid var(--border);
+  border-radius: var(--radius-pill); border: 1px solid var(--border);
 }
 
 /* ══════════════════════════════════════
@@ -94,21 +114,22 @@ body {
 }
 .hero::before {
   content: '';
-  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-  width: 900px; height: 600px;
-  background: radial-gradient(ellipse, rgba(255,77,77,0.06) 0%, transparent 70%);
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
   pointer-events: none;
+  opacity: 0.4;
 }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 600; color: var(--red);
+  font-size: 12px; font-weight: 600; color: var(--accent);
   text-transform: uppercase; letter-spacing: 2px;
   margin-bottom: 28px;
   animation: fadeUp 0.7s var(--ease) both;
 }
 .hero-eyebrow::before {
   content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--red);
+  background: var(--accent);
   animation: blink 2s infinite;
 }
 @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
@@ -135,24 +156,31 @@ body {
   animation: fadeUp 0.7s 0.24s var(--ease) both;
 }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: 'DM Sans', sans-serif;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-sans);
   font-size: 16px; font-weight: 600;
   padding: 16px 36px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: none; cursor: pointer;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
+  white-space: nowrap;
 }
 .btn:hover { transform: translateY(-2px); }
+
+/* Page-specific: red CTA (lifestyle danger framing) */
 .btn-red {
   background: var(--red); color: #fff;
 }
-.btn-red:hover { box-shadow: 0 8px 40px var(--red-glow); }
+.btn-red:hover { box-shadow: 0 8px 32px var(--red-glow); }
+
+/* Page-specific: green / positive action */
 .btn-green {
   background: var(--accent); color: #0A0A0F;
 }
-.btn-green:hover { box-shadow: 0 8px 40px var(--accent-glow); }
+.btn-green:hover { box-shadow: 0 8px 32px var(--accent-glow); }
+
+/* Ghost / secondary — matches system .btn-secondary */
 .btn-ghost {
   background: transparent; color: var(--text);
   border: 1px solid var(--border);
@@ -161,6 +189,12 @@ body {
   border-color: var(--border-active);
   background: var(--surface);
 }
+
+/* System primary alias */
+.btn-primary {
+  background: var(--accent); color: #0A0A0F;
+}
+.btn-primary:hover { box-shadow: 0 8px 32px var(--accent-glow); }
 
 /* ── MINI GRAPH (Hero visual) ── */
 .hero-graph {
@@ -212,7 +246,7 @@ body {
 .emotion-punchline {
   margin-top: 48px;
   font-size: 15px;
-  color: var(--red);
+  color: var(--accent);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -242,7 +276,7 @@ body {
   max-width: 560px; margin: 0 auto;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   padding: 40px 36px;
   position: relative;
   overflow: hidden;
@@ -290,8 +324,8 @@ body {
   color: var(--text-muted); font-weight: 400;
 }
 .input-group input:focus {
-  border-color: rgba(255,255,255,0.18);
-  background: var(--surface-3);
+  border-color: rgba(61,255,160,0.3);
+  background: var(--surface-hover);
 }
 
 .calc-submit {
@@ -299,8 +333,8 @@ body {
   width: 100%;
   font-size: 16px;
   padding: 16px;
-  border-radius: 100px;
-  font-family: 'DM Sans', sans-serif;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -395,7 +429,7 @@ body {
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 20px;
 }
 .stat-label {
@@ -416,7 +450,7 @@ body {
   margin-top: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 32px;
   text-align: center;
 }
@@ -425,7 +459,7 @@ body {
   font-size: clamp(28px, 5vw, 36px);
   font-weight: 800;
   letter-spacing: -1px;
-  color: var(--red);
+  color: var(--accent);
   line-height: 1.2;
 }
 .punch-card .big-sub {
@@ -467,9 +501,9 @@ body {
   text-align: center;
   font-size: 14px; color: var(--text-dim);
   padding: 12px;
-  background: var(--red-dim);
+  background: var(--surface);
   border-radius: 10px;
-  border: 1px solid rgba(255,77,77,0.08);
+  border: 1px solid var(--border);
 }
 .savings-verdict.positive {
   background: var(--green-dim);
@@ -520,7 +554,7 @@ body {
   min-width: 60px;
 }
 .bar-fill.income { background: var(--accent); }
-.bar-fill.expense { background: var(--red); }
+.bar-fill.expense { background: var(--warm); }
 
 /* ══════════════════════════════════════
    CTA / CONVERSION
@@ -585,27 +619,70 @@ body {
 /* ══════════════════════════════════════
    FOOTER
    ══════════════════════════════════════ */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 32px;
-  text-align: center;
-  font-size: 13px; color: var(--text-dim);
-}
-footer a { color: var(--accent); text-decoration: none; }
+footer{
+    padding:40px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary)
+  }
+  footer a{color:var(--accent);text-decoration:none}
 
 /* ══════════════════════════════════════
-   ANIMATIONS
+   ANIMATIONS  —  Yaari Design System
    ══════════════════════════════════════ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Hero stagger (eyebrow already has fadeUp inline, extend the rest) ── */
+.hero h1        { animation: fadeUp 0.7s 0.08s var(--ease) both; }
+.hero-sub       { animation: fadeUp 0.7s 0.18s var(--ease) both; }
+.hero-cta       { animation: fadeUp 0.7s 0.26s var(--ease) both; }
+.hero-graph     { animation: fadeUp 0.7s 0.34s var(--ease) both; }
+
+/* ── Emotion items stagger ── */
+.emotion h2                    { animation: fadeUp 0.7s 0.0s ease both; }
+.emotion-item:nth-child(1)     { animation: slideIn 0.5s 0.1s ease both; }
+.emotion-item:nth-child(2)     { animation: slideIn 0.5s 0.2s ease both; }
+.emotion-item:nth-child(3)     { animation: slideIn 0.5s 0.3s ease both; }
+.emotion-punchline             { animation: fadeUp 0.6s 0.45s ease both; }
+
+/* ── Calc section ── */
+.calc-header h2  { animation: fadeUp 0.7s 0.0s ease both; }
+.calc-header p   { animation: fadeUp 0.7s 0.08s ease both; }
+.calc-card       { animation: fadeUp 0.7s 0.16s ease both; }
+
+/* ── Result cards stagger ── */
+.score-card      { animation: fadeUp 0.6s 0.0s ease both; }
+.stats-grid      { animation: fadeUp 0.6s 0.1s ease both; }
+.punch-card      { animation: fadeUp 0.6s 0.18s ease both; }
+.result-graph    { animation: fadeUp 0.6s 0.26s ease both; }
+.savings-compare { animation: fadeUp 0.6s 0.32s ease both; }
+.savings-verdict { animation: fadeUp 0.6s 0.38s ease both; }
+.convert         { animation: fadeUp 0.6s 0.44s ease both; }
+
+/* ── System utility animation classes ── */
+.anim-1 { animation: fadeUp 0.8s 0.0s ease both; }
+.anim-2 { animation: fadeUp 0.8s 0.1s ease both; }
+.anim-3 { animation: fadeUp 0.8s 0.2s ease both; }
+.anim-4 { animation: fadeUp 0.8s 0.3s ease both; }
+.anim-5 { animation: fadeUp 0.8s 0.4s ease both; }
 
 /* ══════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════ */
-@media (max-width: 600px) {
-  .nav { padding: 14px 20px; }
+@media (max-width: 768px) {
+  .nav { padding: 16px 20px; }
   .nav-tag { display: none; }
   .calc-card { padding: 28px 20px; }
   .calc-pair { grid-template-columns: 1fr; }
@@ -614,15 +691,21 @@ footer a { color: var(--accent); text-decoration: none; }
   .savings-arrow { transform: rotate(90deg); }
   .hero { padding: 120px 20px 80px; }
   .score-value { font-size: 44px; }
+  footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 24px 20px;
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+
 <nav class="nav">
-  <a href="#" class="nav-logo"><span>Y</span>aari</a>
-  <div class="nav-tag">Free Tool</div>
+  <a href="index.html" class="nav-logo"><span>Y</span>aari</a>
+  <a href="index.html" class="nav-back">← All Free Tools</a>
 </nav>
 
 <!-- ════════════════ HERO ════════════════ -->
@@ -634,7 +717,7 @@ footer a { color: var(--accent); text-decoration: none; }
   <p class="hero-sub">You didn't notice it. But your bank account did.</p>
 
   <div class="hero-cta">
-    <a href="#calculator" class="btn btn-red">Check your lifestyle creep →</a>
+    <a href="#calculator" class="btn btn-primary">Check your lifestyle creep →</a>
   </div>
 
   <!-- Mini SVG graph -->
@@ -731,7 +814,7 @@ footer a { color: var(--accent); text-decoration: none; }
       </div>
     </div>
 
-    <button class="btn btn-red calc-submit" onclick="calculate()">
+    <button class="btn btn-primary calc-submit" onclick="calculate()">
       Reveal my money truth →
     </button>
   </div>
@@ -825,7 +908,13 @@ footer a { color: var(--accent); text-decoration: none; }
 </section>
 
 <footer>
-  <a href="#">Yaari</a> — Your daily money companion. Built in Hyderabad 🇮🇳
+  <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+  <div style="display:flex;gap:24px;justify-content:center;margin-top:12px;">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
 </footer>
 
 <script>
@@ -917,7 +1006,7 @@ function calculate() {
 
   if (excessSpend > 0) {
     punchNum.textContent = fmt(Math.round(excessSpend)) + '/month extra';
-    punchNum.style.color = 'var(--red)';
+    punchNum.style.color = 'var(--warm)';
     punchSub.textContent = "That's " + fmt(Math.round(excessAnnual)) + '/year silently lost to lifestyle creep.';
   } else {
     punchNum.textContent = fmt(Math.abs(Math.round(excessSpend))) + '/month saved';
@@ -939,7 +1028,7 @@ function calculate() {
   document.getElementById('savings-then').textContent = savThen.toFixed(0) + '% saved';
   const savNowEl = document.getElementById('savings-now');
   savNowEl.textContent = savNow.toFixed(0) + '% saved';
-  savNowEl.style.color = savNow < savThen ? 'var(--red)' : 'var(--accent)';
+  savNowEl.style.color = savNow < savThen ? 'var(--warm)' : 'var(--accent)';
 
   const verdict = document.getElementById('savings-verdict');
   if (savDrop > 0) {
@@ -949,6 +1038,16 @@ function calculate() {
     verdict.className = 'savings-verdict positive';
     verdict.textContent = "Your savings rate improved by " + Math.abs(savDrop).toFixed(0) + '%. Well done.';
   }
+
+  // Re-trigger result animations on each calculation
+  const resultEls = document.querySelectorAll(
+    '.score-card, .stats-grid, .punch-card, .result-graph, .savings-compare, .savings-verdict, .convert'
+  );
+  resultEls.forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight; // force reflow
+    el.style.animation = '';
+  });
 
   // Show results
   document.getElementById('results').classList.add('visible');

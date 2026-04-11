@@ -98,14 +98,24 @@
   .loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid var(--surface-hover);border-top-color:var(--accent);animation:spin .8s linear infinite}
   .loading-text{font-size:16px;color:var(--text-secondary)}
 
-  footer{padding:40px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--text-secondary)}footer a{color:var(--accent);text-decoration:none}
+  footer{
+    padding:40px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary)
+  }
+  footer a{color:var(--accent);text-decoration:none}
 
   @media(max-width:768px){nav{padding:16px 20px}.tool-card{padding:28px 20px}.score-ring{width:150px;height:150px}.score-ring svg{width:150px;height:150px}.score-big{font-size:42px}.cta-box{padding:36px 20px}}
 </style>
 </head>
 <body>
 
-<nav><a href="#" class="nav-logo"><span>Y</span>aari</a><a href="#" class="nav-back">← All Free Tools</a></nav>
+<nav>
+  <a href="index.html" class="nav-logo"><span>Y</span>aari</a>
+  <a href="index.html" class="nav-back">← All Free Tools</a>
+</nav>
 
 <section class="hero">
   <div class="hero-badge">🏥 Scorecard Tool</div>
@@ -166,7 +176,15 @@
   <p>Above 75 is excellent — you're spending wisely, saving consistently, and managing debt well. 50-75 means room for improvement in at least one area. Below 50 signals urgent changes needed. Most young Indians score 40-55 due to high spending and low emergency savings.</p>
 </section>
 
-<footer><a href="#">Yaari</a> — Your daily money companion. Built in Hyderabad 🇮🇳</footer>
+<footer>
+  <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+  <div style="display:flex;gap:24px;justify-content:center;margin-top:12px;">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div><div class="loading-text" id="loading-text"></div></div>
 

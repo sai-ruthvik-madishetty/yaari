@@ -601,26 +601,14 @@
   }
 
   /* ── FOOTER ── */
-  footer {
-    padding: 40px;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-    flex-wrap: wrap; gap: 16px;
+  footer{
+    padding:40px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary)
   }
-  .footer-left {
-    font-size: 14px; color: var(--text-secondary);
-  }
-  .footer-links {
-    display: flex; gap: 24px;
-  }
-  .footer-links a {
-    font-size: 13px; color: var(--text-secondary);
-    text-decoration: none; transition: color 0.2s;
-  }
-  .footer-links a:hover { color: var(--text); }
-
+  footer a{color:var(--accent);text-decoration:none}
   /* ── FREE TOOLS DROPDOWN ── */
   .nav-dropdown {
     position: relative;
@@ -1082,10 +1070,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-left">
-    <strong style="color:var(--text);">Yaari</strong> &middot; Built in Hyderabad 🇮🇳
-  </div>
-  <div class="footer-links">
+  <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+  <div style="display:flex;gap:24px;justify-content:center;margin-top:12px;">
     <a href="#">Privacy</a>
     <a href="#">Terms</a>
     <a href="#">Twitter</a>

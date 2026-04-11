@@ -193,12 +193,14 @@
             font-weight: 700;
             letter-spacing: -1px;
             margin-bottom: 12px;
+            animation: fadeUp 0.7s 0.0s ease both;
         }
 
         .section-desc {
             font-size: 16px;
             color: var(--text-secondary);
             margin-bottom: 48px;
+            animation: fadeUp 0.7s 0.1s ease both;
         }
 
         .tool-card {
@@ -210,6 +212,7 @@
             padding: 40px 32px;
             text-align: left;
             transition: opacity 0.4s, transform 0.4s;
+            animation: fadeUp 0.7s 0.2s ease both;
         }
 
         .tool-card.hidden {
@@ -460,18 +463,48 @@
         }
 
         /* Footer */
-        footer {
-            padding: 40px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-secondary);
+        footer{
+            padding:40px;
+            border-top:1px solid var(--border);
+            text-align:center;
+            font-size:13px;
+            color:var(--text-secondary)
+        }
+        footer a{color:var(--accent);text-decoration:none}
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
+        /* Hero entrance stagger */
+        .hero-badge   { animation: fadeUp 0.8s 0.0s ease both; }
+        .hero h1      { animation: fadeUp 0.8s 0.1s ease both; }
+        .hero-sub     { animation: fadeUp 0.8s 0.2s ease both; }
+        .hero-cta     { animation: fadeUp 0.8s 0.3s ease both; }
+        .hero-trust   { animation: fadeUp 0.8s 0.35s ease both; }
+
+        /* Badge dot pulse */
+        .hero-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
         }
+
+        /* Result cards staggered entrance */
+        .gauge-card   { animation: fadeUp 0.6s 0.0s ease both; }
+        .message-card { animation: fadeUp 0.6s 0.1s ease both; }
+        .info-card    { animation: fadeUp 0.6s 0.2s ease both; }
+        .cta-card     { animation: fadeUp 0.6s 0.3s ease both; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -503,12 +536,12 @@
     <!-- Nav -->
     <nav>
         <a href="index.html" class="nav-logo"><span>Y</span>aari</a>
-        <a href="free-tools.html" class="nav-back">← All Free Tools</a>
+        <a href="index.html" class="nav-back">← All Free Tools</a>
     </nav>
 
     <!-- Hero -->
     <section class="hero">
-        <div class="hero-badge">EMI Stress Test</div>
+        <div class="hero-badge"><span class="dot"></span>EMI Stress Test</div>
         <h1>Is your EMI load <span class="serif">too heavy?</span></h1>
         <p class="hero-sub">Get an instant health check on your debt obligations. Safe zone or danger zone?</p>
         <div class="hero-cta">
@@ -543,7 +576,13 @@
 
     <!-- Footer -->
     <footer>
-        <a href="index.html">Yaari</a> · Your daily money companion. Built in Hyderabad 🇮🇳
+        <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+        <div style="display:flex;gap:24px;justify-content:center;margin-top:12px;">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+        </div>
     </footer>
 
     <script>

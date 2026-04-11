@@ -91,14 +91,24 @@
   .loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid var(--surface-hover);border-top-color:var(--accent);animation:spin .8s linear infinite}
   .loading-text{font-size:16px;color:var(--text-secondary)}
 
-  footer{padding:40px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--text-secondary)}footer a{color:var(--accent);text-decoration:none}
+  footer{
+    padding:40px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary)
+  }
+  footer a{color:var(--accent);text-decoration:none}
 
   @media(max-width:768px){nav{padding:16px 20px}.tool-card{padding:28px 20px}.ig-pair{grid-template-columns:1fr}.needs-wants{grid-template-columns:1fr}.score-num{font-size:56px}.cta-box{padding:36px 20px}}
 </style>
 </head>
 <body>
 
-<nav><a href="#" class="nav-logo"><span>Y</span>aari</a><a href="#" class="nav-back">← All Free Tools</a></nav>
+<nav>
+  <a href="index.html" class="nav-logo"><span>Y</span>aari</a>
+  <a href="index.html" class="nav-back">← All Free Tools</a>
+</nav>
 
 <section class="hero">
   <div class="hero-badge">📋 Report Generator</div>
@@ -145,7 +155,15 @@
   <p>If your savings rate is below 15%, you're likely spending more on wants than you think. The problem isn't discipline — it's that wants disguise themselves as needs in the moment.</p>
 </section>
 
-<footer><a href="#">Yaari</a> — Your daily money companion. Built in Hyderabad 🇮🇳</footer>
+<footer>
+  <div><strong>Yaari</strong> · Built in Hyderabad 🇮🇳</div>
+  <div style="display:flex;gap:24px;justify-content:center;margin-top:12px;">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
 
 <div class="loading-overlay" id="loading"><div class="loading-spinner"></div><div class="loading-text" id="loading-text"></div></div>
 
