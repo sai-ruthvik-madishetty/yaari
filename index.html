@@ -698,6 +698,46 @@
     color: var(--text-secondary);
     line-height: 1.4;
   }
+  .mobile-tools-wrap {
+    display: none;
+    position: relative;
+  }
+  .mobile-tools-btn {
+    background: transparent;
+    border: 1px solid rgba(61,255,160,0.35);
+    color: var(--accent);
+    border-radius: 100px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mobile-tools-btn .chevron {
+    font-size: 10px;
+    transition: transform 0.25s ease;
+  }
+  .mobile-tools-wrap.open .mobile-tools-btn .chevron {
+    transform: rotate(180deg);
+  }
+  .mobile-tools-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: min(92vw, 320px);
+    background: #111827;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 16px 42px rgba(0,0,0,0.45);
+    z-index: 260;
+  }
+  .mobile-tools-wrap.open .mobile-tools-menu {
+    display: block;
+  }
 
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
@@ -709,6 +749,7 @@
   @media (max-width: 768px) {
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
+    .mobile-tools-wrap { display: block; }
     section { padding: 80px 20px; }
     .features-grid { grid-template-columns: 1fr; }
     .credit-content { grid-template-columns: 1fr; gap: 40px; }
@@ -724,6 +765,12 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo"><span>Y</span>aari</div>
+  <div class="mobile-tools-wrap" id="mobile-tools-wrap">
+    <button class="mobile-tools-btn" type="button" id="mobile-tools-btn">
+      Free Tools <span class="chevron">▾</span>
+    </button>
+    <div class="mobile-tools-menu" id="mobile-tools-menu"></div>
+  </div>
   <div class="nav-links">
     <a href="#problem">Problem</a>
     <a href="#features">Features</a>
@@ -732,64 +779,7 @@
       <span class="nav-dropdown-btn">Free Tools <span class="chevron">▾</span></span>
       <div class="nav-dropdown-content">
         <div class="nav-dropdown-title">Try Yaari before you join</div>
-        <div class="nav-dropdown-grid">
-          <a href="debt-plan-engine.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">💳</div>
-            <div>
-              <div class="nav-dropdown-item-title">Debt Escape Plan</div>
-              <div class="nav-dropdown-item-desc">See when you can be debt-free.</div>
-            </div>
-          </a>
-          <a href="spending-personality-quiz.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">🧠</div>
-            <div>
-              <div class="nav-dropdown-item-title">Spending Personality</div>
-              <div class="nav-dropdown-item-desc">Find your real money style.</div>
-            </div>
-          </a>
-          <a href="financial-health-score.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">📊</div>
-            <div>
-              <div class="nav-dropdown-item-title">Financial Health Score</div>
-              <div class="nav-dropdown-item-desc">0–100 snapshot in minutes.</div>
-            </div>
-          </a>
-          <a href="emi-stress-test.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">📉</div>
-            <div>
-              <div class="nav-dropdown-item-title">EMI Stress Test</div>
-              <div class="nav-dropdown-item-desc">Are your EMIs too heavy?</div>
-            </div>
-          </a>
-          <a href="lifestyle-calculator.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">🍜</div>
-            <div>
-              <div class="nav-dropdown-item-title">Lifestyle Calculator</div>
-              <div class="nav-dropdown-item-desc">Match lifestyle and salary.</div>
-            </div>
-          </a>
-          <a href="money-timeline.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">📅</div>
-            <div>
-              <div class="nav-dropdown-item-title">Money Timeline</div>
-              <div class="nav-dropdown-item-desc">Your month on one line.</div>
-            </div>
-          </a>
-          <a href="future-spending-projection.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">🔮</div>
-            <div>
-              <div class="nav-dropdown-item-title">Future Spending</div>
-              <div class="nav-dropdown-item-desc">Project the next 30 days.</div>
-            </div>
-          </a>
-          <a href="monthly-lifestyle-report.html" class="nav-dropdown-item">
-            <div class="nav-dropdown-item-icon">📑</div>
-            <div>
-              <div class="nav-dropdown-item-title">Lifestyle Report</div>
-              <div class="nav-dropdown-item-desc">One-page money recap.</div>
-            </div>
-          </a>
-        </div>
+        <div class="nav-dropdown-grid" id="desktop-tools-grid"></div>
       </div>
     </div>
     <a href="#cta" class="nav-cta">Join Waitlist</a>
@@ -1080,6 +1070,49 @@
 </footer>
 
 <script>
+  const FREE_TOOLS = [
+    { href: 'debt-plan-engine.html', icon: '💳', title: 'Debt Escape Plan', desc: 'See when you can be debt-free.' },
+    { href: 'spending-personality-quiz.html', icon: '🧠', title: 'Spending Personality', desc: 'Find your real money style.' },
+    { href: 'financial-health-score.html', icon: '📊', title: 'Financial Health Score', desc: '0-100 snapshot in minutes.' },
+    { href: 'emi-stress-test.html', icon: '📉', title: 'EMI Stress Test', desc: 'Are your EMIs too heavy?' },
+    { href: 'lifestyle-calculator.html', icon: '🍜', title: 'Lifestyle Calculator', desc: 'Match lifestyle and salary.' },
+    { href: 'money-timeline.html', icon: '📅', title: 'Money Timeline', desc: 'Your month on one line.' },
+    { href: 'future-spending-projection.html', icon: '🔮', title: 'Future Spending', desc: 'Project the next 30 days.' },
+    { href: 'monthly-lifestyle-report.html', icon: '📑', title: 'Lifestyle Report', desc: 'One-page money recap.' }
+  ];
+
+  function renderToolsList(container) {
+    if (!container) return;
+    container.innerHTML = FREE_TOOLS.map((tool) => `
+      <a href="${tool.href}" class="nav-dropdown-item">
+        <div class="nav-dropdown-item-icon">${tool.icon}</div>
+        <div>
+          <div class="nav-dropdown-item-title">${tool.title}</div>
+          <div class="nav-dropdown-item-desc">${tool.desc}</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  renderToolsList(document.getElementById('desktop-tools-grid'));
+  renderToolsList(document.getElementById('mobile-tools-menu'));
+
+  const mobileToolsWrap = document.getElementById('mobile-tools-wrap');
+  const mobileToolsBtn = document.getElementById('mobile-tools-btn');
+  const mobileToolsMenu = document.getElementById('mobile-tools-menu');
+
+  if (mobileToolsWrap && mobileToolsBtn && mobileToolsMenu) {
+    mobileToolsBtn.addEventListener('click', () => {
+      mobileToolsWrap.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileToolsWrap.contains(e.target)) {
+        mobileToolsWrap.classList.remove('open');
+      }
+    });
+  }
+
   function handleWaitlist(e) {
     e.preventDefault();
     const name = document.getElementById('wl-name').value.trim();
