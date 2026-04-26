@@ -564,6 +564,18 @@
     border-color: rgba(61,255,160,0.35);
     box-shadow: 0 0 0 3px rgba(61,255,160,0.06);
   }
+  .waitlist-input.input-error {
+    border-color: rgba(255, 107, 107, 0.75);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.12);
+  }
+  .waitlist-error {
+    display: none;
+    font-size: 13px;
+    color: #ff8b8b;
+    margin-top: -2px;
+    text-align: left;
+    padding-left: 10px;
+  }
   .waitlist-submit {
     width: 100%;
     background: var(--accent);
@@ -599,6 +611,29 @@
     margin-top: 8px;
     opacity: 0.7;
   }
+  .waitlist-toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    max-width: 320px;
+    z-index: 2000;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: #11151f;
+    color: var(--text);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .waitlist-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .waitlist-toast.success { border-color: rgba(61,255,160,0.45); }
+  .waitlist-toast.error { border-color: rgba(255,107,107,0.6); }
 
   /* ── FOOTER ── */
   footer{
@@ -1051,6 +1086,7 @@
         <input type="text" class="waitlist-input" placeholder="Your name" id="wl-name">
         <input type="email" class="waitlist-input" placeholder="you@example.com" id="wl-email" required>
       </div>
+      <p class="waitlist-error" id="wl-error"></p>
       <button type="submit" class="waitlist-submit">Join the waitlist →</button>
       <p class="waitlist-success" id="waitlist-success">🎉 You're on the list! We'll be in touch soon.</p>
       <p class="waitlist-meta">No spam. Just a heads-up when your spot opens.</p>
@@ -1068,6 +1104,8 @@
     <a href="#">LinkedIn</a>
   </div>
 </footer>
+
+<div class="waitlist-toast" id="waitlist-toast" aria-live="polite"></div>
 
 <script>
   const FREE_TOOLS = [
@@ -1113,26 +1151,89 @@
     });
   }
 
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('waitlist-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `waitlist-toast ${type} show`;
+    clearTimeout(showToast.timerId);
+    showToast.timerId = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  function setWaitlistError(message) {
+    const emailInput = document.getElementById('wl-email');
+    const error = document.getElementById('wl-error');
+    if (!emailInput || !error) return;
+    if (!message) {
+      emailInput.classList.remove('input-error');
+      error.style.display = 'none';
+      error.textContent = '';
+      return;
+    }
+    emailInput.classList.add('input-error');
+    error.textContent = message;
+    error.style.display = 'block';
+  }
+
   function handleWaitlist(e) {
     e.preventDefault();
-    const name = document.getElementById('wl-name').value.trim();
-    const email = document.getElementById('wl-email').value.trim();
-    if (!email) return;
+    const nameInput = document.getElementById('wl-name');
+    const emailInput = document.getElementById('wl-email');
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email) {
+      setWaitlistError('Please enter your email.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setWaitlistError('Please enter a valid email address.');
+      return;
+    }
+    setWaitlistError('');
+
+    const existingEmails = new Set(JSON.parse(localStorage.getItem('yaariWaitlistEmails') || '[]'));
+    if (existingEmails.has(email)) {
+      showToast('This email is already on the waitlist.', 'error');
+      return;
+    }
 
     const btn = document.querySelector('.waitlist-submit');
     btn.textContent = 'Adding you…';
     btn.disabled = true;
 
-    // Simulate async submit — swap in your real endpoint here
-    setTimeout(() => {
+    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwSQFszZW_6uSOe3RwxXCVXuuuzexNy72c_3LV1RdEe884NFcKE5HzE8Ut3m_oNR9xTNQ/exec';
+
+    fetch(APPS_SCRIPT_WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify({ name, email })
+    }).then(() => {
+      existingEmails.add(email);
+      localStorage.setItem('yaariWaitlistEmails', JSON.stringify(Array.from(existingEmails)));
       document.getElementById('waitlist-form').querySelector('.waitlist-form-row').style.display = 'none';
       btn.style.display = 'none';
       document.querySelector('.waitlist-meta').style.display = 'none';
       const success = document.getElementById('waitlist-success');
       success.style.display = 'block';
       if (name) success.textContent = `🎉 You're on the list, ${name.split(' ')[0]}! We'll be in touch soon.`;
-    }, 800);
+      showToast('You have been added to the waitlist.', 'success');
+    }).catch(() => {
+      btn.textContent = 'Join Waitlist';
+      btn.disabled = false;
+      showToast('Could not submit right now. Please try again.', 'error');
+    });
   }
+
+  document.getElementById('wl-email').addEventListener('input', () => {
+    setWaitlistError('');
+  });
 </script>
 </body>
 </html>
